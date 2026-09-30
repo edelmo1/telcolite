@@ -1,6 +1,6 @@
 package ba.edi.telcolite.tariff;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
-public class TariffCatalog {
+@Repository
+public class TariffRepository {
 
 
     private final Map<String, TariffPlan> tariffs = new ConcurrentHashMap<>();
 
-    public TariffCatalog() {
+    public TariffRepository() {
         save(new TariffPlan("BASIC", "Basic", 15.0, 300, 100, 5));
         save(new TariffPlan("SMART", "Smart", 30.0, 1000, 500, 20));
         save(new TariffPlan("UNLIMITED", "Unlimited", 50.0, 10000, 10000, 100));
@@ -42,6 +42,5 @@ public class TariffCatalog {
     public boolean deleteByCode(String code) {
         return tariffs.remove(code.toUpperCase()) != null;
     }
-
 
 }
