@@ -21,4 +21,18 @@ public record TariffPlan(String code,
             throw new IllegalArgumentException("Included amounts must not be negative");
         }
     }
+
+    public static TariffPlan from(Tariff tariff) {
+        return new TariffPlan(
+                tariff.getCode(),
+                tariff.getName(),
+                tariff.getMonthlyPrice(),
+                tariff.getIncludedMinutes(),
+                tariff.getIncludedSms(),
+                tariff.getIncludedGb());
+    }
+
+    public Tariff toEntity() {
+        return new Tariff(code, name, monthlyPrice, includedMinutes, includedSms, includedGb);
+    }
 }

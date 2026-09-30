@@ -1,15 +1,35 @@
 package ba.edi.telcolite.subscription;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="subscriptions")
 public class Subscription {
 
+    @Id
     private Long id;
-    private final Long customerId;
+
+    @Column(nullable = false)
+    private  Long customerId;
+
+    @Column(nullable = false)
     private String tariffCode;
-    private final String phoneNumber;
+
+    @Column(nullable = false)
+    private  String phoneNumber;
+
+    @Column(nullable = false)
     private SubscriptionStatus status;
-    private final LocalDateTime activatedAt;
+
+    @Column(nullable = false)
+    private  LocalDateTime activatedAt;
+
+    protected Subscription(){}
 
     public Subscription(Long id, Long customerId,
                         String tariffCode,

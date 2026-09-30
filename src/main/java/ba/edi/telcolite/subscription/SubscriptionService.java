@@ -4,14 +4,17 @@ import ba.edi.telcolite.billing.PriceCalculator;
 import ba.edi.telcolite.customer.Customer;
 import ba.edi.telcolite.customer.CustomerService;
 import ba.edi.telcolite.notification.NotificationService;
+import ba.edi.telcolite.tariff.Tariff;
 import ba.edi.telcolite.tariff.TariffPlan;
 import ba.edi.telcolite.tariff.TariffService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class SubscriptionService {
 
     private static final int MAX_ACTIVE_SUBSCRIPTIONS = 3;
@@ -37,6 +40,7 @@ public class SubscriptionService {
         this.currency = currency;
     }
 
+    @Transactional
     public SubscriptionResponse create(Long customerId, CreateSubscriptionRequest request) {
         Customer customer = customerService.getCustomer(customerId);
         if (!customer.isActive()) {
@@ -45,7 +49,7 @@ public class SubscriptionService {
 
         TariffPlan tariff = tariffService.getByCode(request.tariffCode());
 
-        if (subscriptionRepository.existByPhoneNumber(request.phoneNumber())) {
+        if (subscriptionRepository.existsByPhoneNumber(request.phoneNumber())) {
             throw new DuplicatePhoneNumberException(request.phoneNumber());
         }
 
@@ -77,18 +81,21 @@ public class SubscriptionService {
         return toResponse(getSubscription(id));
     }
 
+    @Transactional
     public SubscriptionResponse suspend(Long id) {
         Subscription subscription = getSubscription(id);
         subscription.suspend();
         return toResponse(subscriptionRepository.save(subscription));
     }
 
+    @Transactional
     public SubscriptionResponse resume(Long id) {
         Subscription subscription = getSubscription(id);
         subscription.resume();
         return toResponse(subscriptionRepository.save(subscription));
     }
 
+    @Transactional
     public SubscriptionResponse terminate(Long id) {
         Subscription subscription = getSubscription(id);
         subscription.terminate();
@@ -101,7 +108,7 @@ public class SubscriptionService {
     }
 
     private SubscriptionResponse toResponse(Subscription subscription) {
-        TariffPlan tariff = tariffService.getByCode(subscription.getTariffCode());
+        Tariff tariff = tariffService.getTariff(subscription.getTariffCode());
         double price = priceCalculator.finalMonthlyPrice(tariff);
         return SubscriptionResponse.from(subscription, tariff, price, currency);
     }

@@ -1,11 +1,13 @@
 package ba.edi.telcolite.customer;
 
 import ba.edi.telcolite.notification.NotificationService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -17,8 +19,9 @@ public class CustomerService {
         this.notificationService = notificationService;
     }
 
+    @Transactional
     public CustomerResponse create(CreateCustomerRequest request) {
-        if (customerRepository.existByEmail(request.email())) {
+        if (customerRepository.existsByEmail(request.email())) {
             throw new DuplicateEmailException(request.email());
         }
 
@@ -41,12 +44,14 @@ public class CustomerService {
         return CustomerResponse.from(getCustomer(id));
     }
 
+    @Transactional
     public CustomerResponse block(Long id) {
         Customer customer = getCustomer(id);
         customer.block();
         return CustomerResponse.from(customerRepository.save(customer));
     }
 
+    @Transactional
     public CustomerResponse unblock(Long id) {
         Customer customer = getCustomer(id);
         customer.unblock();

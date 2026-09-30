@@ -1,14 +1,32 @@
 package ba.edi.telcolite.customer;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name="customers")
 public class Customer {
+    @Id
     private Long id;
-    private final String firstName;
-    private final String lastName;
-    private final String email;
+
+    @Column(nullable=false)
+    private  String firstName;
+
+    @Column(nullable=false)
+    private  String lastName;
+
+    @Column(nullable=false, unique=true)
+    private  String email;
+
+    @Enumerated(EnumType.STRING)
     private CustomerStatus status;
-    private final LocalDateTime createdAt;
+
+    @Column(nullable=false)
+    private  LocalDateTime createdAt;
+
+    protected Customer() {
+    }
 
     public Customer(Long id, String firstName,
                     String lastName,
