@@ -2,8 +2,10 @@ package ba.edi.telcolite.tariff;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -27,9 +29,9 @@ public class TariffController {
     }
 
     @PostMapping
-    public TariffPlan create(@RequestBody TariffPlan plan) {
-
-        return tariffService.create(plan);
+    public ResponseEntity<TariffPlan> create(@RequestBody TariffPlan plan) {
+        TariffPlan created = tariffService.create(plan);
+        return ResponseEntity.created(URI.create("/api/tariffs/" + created.code())).body(created);
     }
 
     @GetMapping("/{code}/price")

@@ -1,9 +1,6 @@
 package ba.edi.telcolite.subscription;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 public class Subscription {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -23,7 +21,7 @@ public class Subscription {
     @Column(nullable = false)
     private  String phoneNumber;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SubscriptionStatus status;
 
     @Column(nullable = false)

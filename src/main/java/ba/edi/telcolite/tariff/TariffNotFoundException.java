@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class TariffNotFoundException extends RuntimeException {
     public TariffNotFoundException(String message) {
-        super("Tariff nout found: " + message);
+        super("Tariff not found: " + message);
     }
 }

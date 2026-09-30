@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Table(name="customers")
 public class Customer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable=false)
@@ -42,14 +43,14 @@ public class Customer {
 
     public void block(){
         if(status==CustomerStatus.BLOCKED){
-            throw new IllegalArgumentException("Customer is already blocked");
+            throw new IllegalStateException("Customer is already blocked");
         }
         status=CustomerStatus.BLOCKED;
     }
 
     public void unblock(){
         if(status==CustomerStatus.ACTIVE){
-            throw new IllegalArgumentException("Customer is already active");
+            throw new IllegalStateException("Customer is already active");
         }
         status=CustomerStatus.ACTIVE;
     }
