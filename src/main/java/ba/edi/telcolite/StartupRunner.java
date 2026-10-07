@@ -3,6 +3,9 @@ package ba.edi.telcolite;
 import ba.edi.telcolite.billing.PriceCalculator;
 import ba.edi.telcolite.tariff.Tariff;
 import ba.edi.telcolite.tariff.TariffRepository;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -17,6 +20,7 @@ public class StartupRunner implements CommandLineRunner {
     private final PriceCalculator priceCalculator;
     private final String operatorName;
     private final String currency;
+    private static final Logger log = LoggerFactory.getLogger(StartupRunner.class);
 
     public StartupRunner(TariffRepository tariffRepository,
                          PriceCalculator priceCalculator,
@@ -29,7 +33,7 @@ public class StartupRunner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String @NonNull ... args) {
         seedTariffs();
         printTariffs();
     }
@@ -47,12 +51,12 @@ public class StartupRunner implements CommandLineRunner {
     }
 
     private void printTariffs() {
-        System.out.println("=== " + operatorName + " ===");
+        log.info("=== {} ===", operatorName);
         tariffRepository.findAll().stream()
                 .sorted(Comparator.comparing(Tariff::getMonthlyPrice))
-                .forEach(t -> System.out.printf("%-10s | %.2f %s -> %.2f %s%n",
+                .forEach(t -> log.info("{} | {} {} -> {} {}",
                         t.getCode(),
-                        t.getMonthlyPrice(), currency,
-                        priceCalculator.finalMonthlyPrice(t), currency));
+                        "%.2f".formatted(t.getMonthlyPrice()), currency,
+                        "%.2f".formatted(priceCalculator.finalMonthlyPrice(t)), currency));
     }
 }

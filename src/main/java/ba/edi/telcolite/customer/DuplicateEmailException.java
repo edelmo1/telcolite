@@ -1,12 +1,10 @@
 package ba.edi.telcolite.customer;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import ba.edi.telcolite.common.ConflictException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class DuplicateEmailException extends RuntimeException {
-    public DuplicateEmailException(String message) {
+public class DuplicateEmailException extends ConflictException {
+    public DuplicateEmailException(String email) {
 
-        super("Duplicated email: " + message);
+        super("Duplicated email: " + email);
     }
 }

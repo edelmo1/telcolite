@@ -1,5 +1,6 @@
 package ba.edi.telcolite.customer;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CustomerResponse create(@RequestBody CreateCustomerRequest request){
+    public CustomerResponse create(@Valid @RequestBody CreateCustomerRequest request){
         CustomerResponse created = customerService.create(request);
         return ResponseEntity.created(URI.create("/api/customers/" + created.id())).body(created).getBody();    }
 

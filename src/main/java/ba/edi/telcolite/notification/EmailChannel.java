@@ -1,9 +1,13 @@
 package ba.edi.telcolite.notification;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EmailChannel implements NotificationChannel{
+
+    private static final Logger log = LoggerFactory.getLogger(EmailChannel.class);
 
     @Override
    public String name(){
@@ -11,8 +15,7 @@ public class EmailChannel implements NotificationChannel{
     }
     @Override
     public void send(String recipient, String message){
-        System.out.printf("Recipient: %s ; message: %s%n",recipient,message);
-
+        log.info("[{}] {}: {}", name(),recipient,message);
     }
 
 }

@@ -1,10 +1,8 @@
 package ba.edi.telcolite.tariff;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import ba.edi.telcolite.common.NotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class TariffNotFoundException extends RuntimeException {
+public class TariffNotFoundException extends NotFoundException {
     public TariffNotFoundException(String message) {
         super("Tariff not found: " + message);
     }

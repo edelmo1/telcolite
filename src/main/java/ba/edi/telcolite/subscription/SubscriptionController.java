@@ -1,5 +1,6 @@
 package ba.edi.telcolite.subscription;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class SubscriptionController {
 
     @PostMapping("/api/customers/{customerId}/subscriptions")
     public ResponseEntity<SubscriptionResponse> create(@PathVariable Long customerId,
-                                                       @RequestBody CreateSubscriptionRequest request) {
+                                                       @RequestBody @Valid CreateSubscriptionRequest request) {
         SubscriptionResponse created = subscriptionService.create(customerId, request);
         return ResponseEntity.created(URI.create("/api/subscriptions/" + created.id())).body(created);
     }

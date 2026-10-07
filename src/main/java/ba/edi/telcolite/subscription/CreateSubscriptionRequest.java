@@ -1,11 +1,10 @@
 package ba.edi.telcolite.subscription;
 
-public record CreateSubscriptionRequest(String tariffCode,
-                                        String phoneNumber) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
-    public CreateSubscriptionRequest{
-        if(!phoneNumber.matches("06\\d{7,8}")){
-            throw new IllegalArgumentException("Wrong phone number");
-        }
-    }
+public record CreateSubscriptionRequest(
+        @NotBlank @Size(max=50) String tariffCode,
+        @NotBlank @Size(max=50) @Pattern(regexp = "06\\d{7,8}") String phoneNumber) {
 }

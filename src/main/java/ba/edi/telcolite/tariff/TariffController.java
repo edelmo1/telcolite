@@ -1,6 +1,7 @@
 package ba.edi.telcolite.tariff;
 
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class TariffController {
     }
 
     @PostMapping
-    public ResponseEntity<TariffPlan> create(@RequestBody TariffPlan plan) {
+    public ResponseEntity<TariffPlan> create(@RequestBody @Valid TariffPlan plan) {
         TariffPlan created = tariffService.create(plan);
         return ResponseEntity.created(URI.create("/api/tariffs/" + created.code())).body(created);
     }
@@ -42,7 +43,7 @@ public class TariffController {
 
     @PutMapping("/{code}")
     public TariffPlan update(@PathVariable String code,
-                             @RequestBody TariffPlan plan) {
+                             @RequestBody @Valid TariffPlan plan) {
 
         return tariffService.update(code, plan);
     }

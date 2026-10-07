@@ -1,12 +1,10 @@
 package ba.edi.telcolite.customer;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import ba.edi.telcolite.common.NotFoundException;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class CustomerNotFoundException extends RuntimeException {
-    public CustomerNotFoundException(String message) {
+public class CustomerNotFoundException extends NotFoundException {
+    public CustomerNotFoundException(Long id) {
 
-        super("Customer not found: " + message);
+        super("Customer not found: " + id);
     }
 }

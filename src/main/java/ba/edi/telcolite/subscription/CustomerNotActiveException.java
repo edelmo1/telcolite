@@ -1,10 +1,8 @@
 package ba.edi.telcolite.subscription;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import ba.edi.telcolite.common.NotFoundException;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class CustomerNotActiveException extends RuntimeException {
+public class CustomerNotActiveException extends NotFoundException {
     public CustomerNotActiveException(Long customerId) {
         super("Customer %d is not active and cannot get new subscriptions".formatted(customerId));
     }

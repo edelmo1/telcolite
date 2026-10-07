@@ -1,26 +1,16 @@
 package ba.edi.telcolite.tariff;
 
-public record TariffPlan(String code,
-                         String name,
-                         double monthlyPrice,
-                         int includedMinutes,
-                         int includedSms,
-                         int includedGb) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
-    public TariffPlan {
-        if (code == null || code.isBlank()) {
-            throw new IllegalArgumentException("Tariff code must not be blank");
-        }
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Tariff name must not be blank");
-        }
-        if (monthlyPrice < 0) {
-            throw new IllegalArgumentException("Monthly price must not be negative");
-        }
-        if (includedMinutes < 0 || includedSms < 0 || includedGb < 0) {
-            throw new IllegalArgumentException("Included amounts must not be negative");
-        }
-    }
+public record TariffPlan(
+        @NotBlank @Size(max=50) String code,
+        @NotBlank @Size(max=50) String name,
+        @PositiveOrZero double monthlyPrice,
+        @PositiveOrZero int includedMinutes,
+        @PositiveOrZero int includedSms,
+        @PositiveOrZero int includedGb) {
 
     public static TariffPlan from(Tariff tariff) {
         return new TariffPlan(

@@ -60,6 +60,6 @@ public class CustomerService {
 
     public Customer getCustomer(Long id) {
         return customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id.toString()));
+                .orElseThrow(() -> new CustomerNotFoundException(id));
     }
 }
