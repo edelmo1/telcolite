@@ -1,6 +1,7 @@
 package ba.edi.telcolite.subscription;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -8,6 +9,15 @@ import java.util.List;
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long>  {
 
     boolean existsByPhoneNumber(String phoneNumber);
-
+    boolean existsByTariffCode(String tariffCode);
     List<Subscription> findAllByCustomerId(Long customerId);
+    long countByCustomerIdAndStatus(Long customerId, SubscriptionStatus status);
+
+    @Query("""
+        select s from Subscription s
+        join fetch s.tariff
+        where s.customer.id = :customerId
+        order by s.id
+        """)
+    List<Subscription> findAllByCustomerIdWithTariff(Long customerId);
 }

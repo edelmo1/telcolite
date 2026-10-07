@@ -5,7 +5,6 @@ import ba.edi.telcolite.customer.Customer;
 import ba.edi.telcolite.customer.CustomerService;
 import ba.edi.telcolite.notification.NotificationService;
 import ba.edi.telcolite.tariff.Tariff;
-import ba.edi.telcolite.tariff.TariffPlan;
 import ba.edi.telcolite.tariff.TariffService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,24 +46,22 @@ public class SubscriptionService {
             throw new CustomerNotActiveException(customerId);
         }
 
-        TariffPlan tariff = tariffService.getByCode(request.tariffCode());
+        Tariff tariff = tariffService.getTariff(request.tariffCode());
 
         if (subscriptionRepository.existsByPhoneNumber(request.phoneNumber())) {
             throw new DuplicatePhoneNumberException(request.phoneNumber());
         }
 
-        long activeCount = subscriptionRepository.findAllByCustomerId(customerId).stream()
-                .filter(Subscription::isActive)
-                .count();
+        long activeCount = subscriptionRepository.countByCustomerIdAndStatus(customerId, SubscriptionStatus.ACTIVE);
         if (activeCount >= MAX_ACTIVE_SUBSCRIPTIONS) {
             throw new SubscriptionLimitExceededException(customerId, MAX_ACTIVE_SUBSCRIPTIONS);
         }
 
-        Subscription subscription = new Subscription(null, customerId, tariff.code(), request.phoneNumber());
+        Subscription subscription = new Subscription(customer, tariff, request.phoneNumber());
         Subscription saved = subscriptionRepository.save(subscription);
 
         notificationService.broadcast(customer.getEmail(),
-                "Aktiviran je broj %s na tarifi %s.".formatted(saved.getPhoneNumber(), tariff.name()));
+                "Aktiviran je broj %s na tarifi %s.".formatted(saved.getPhoneNumber(), tariff.getName()));
 
         return toResponse(saved);
     }
@@ -108,8 +105,7 @@ public class SubscriptionService {
     }
 
     private SubscriptionResponse toResponse(Subscription subscription) {
-        Tariff tariff = tariffService.getTariff(subscription.getTariffCode());
-        double price = priceCalculator.finalMonthlyPrice(tariff);
-        return SubscriptionResponse.from(subscription, tariff, price, currency);
+        double price = priceCalculator.finalMonthlyPrice(subscription.getTariff());
+        return SubscriptionResponse.from(subscription, price, currency);
     }
 }

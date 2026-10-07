@@ -1,7 +1,6 @@
 package ba.edi.telcolite.subscription;
 
 import ba.edi.telcolite.tariff.Tariff;
-import ba.edi.telcolite.tariff.TariffPlan;
 
 import java.time.LocalDateTime;
 
@@ -17,12 +16,12 @@ public record SubscriptionResponse(Long id,
                                    ) {
 
     public static SubscriptionResponse from(Subscription subscription,
-                                            Tariff tariff,
                                             double monthlyPrice,
                                             String currency) {
+        Tariff tariff = subscription.getTariff();
         return new SubscriptionResponse(
                 subscription.getId(),
-                subscription.getCustomerId(),
+                subscription.getCustomer().getId(),
                 subscription.getPhoneNumber(),
                 tariff.getCode(),
                 tariff.getName(),

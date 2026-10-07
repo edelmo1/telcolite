@@ -1,5 +1,7 @@
 package ba.edi.telcolite.subscription;
 
+import ba.edi.telcolite.customer.Customer;
+import ba.edi.telcolite.tariff.Tariff;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -12,13 +14,15 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private  Long customerId;
+    @ManyToOne(fetch=FetchType.LAZY, optional = false)
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
-    @Column(nullable = false)
-    private String tariffCode;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "tariff_code")
+    private Tariff tariff;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private  String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -29,13 +33,12 @@ public class Subscription {
 
     protected Subscription(){}
 
-    public Subscription(Long id, Long customerId,
-                        String tariffCode,
+    public Subscription(Customer customer,
+                        Tariff tariff,
                         String phoneNumber) {
 
-        this.id = id;
-        this.customerId = customerId;
-        this.tariffCode = tariffCode;
+        this.customer = customer;
+        this.tariff = tariff;
         this.phoneNumber = phoneNumber;
         this.status = SubscriptionStatus.ACTIVE;
         this.activatedAt = LocalDateTime.now();
@@ -80,21 +83,18 @@ public class Subscription {
         return phoneNumber;
     }
 
-    public String getTariffCode() {
-        return tariffCode;
+    public Tariff getTariff() {
+        return tariff;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id){
-        this.id=id;
-    }
     public boolean isActive() {
         return status == SubscriptionStatus.ACTIVE;
     }
