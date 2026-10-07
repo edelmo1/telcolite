@@ -14,15 +14,12 @@ import java.util.List;
 public class AuthController {
 
     private final AuthService authService;
-    private final AccessGuard accessGuard;
-    private final SubscriptionService subscriptionService;
+
 
     public AuthController(AuthService authService,
                           AccessGuard accessGuard,
                           SubscriptionService subscriptionService) {
         this.authService = authService;
-        this.accessGuard=accessGuard;
-        this.subscriptionService=subscriptionService;
     }
 
     @PostMapping("/login")
@@ -30,10 +27,4 @@ public class AuthController {
         return authService.login(request);
     }
 
-    @GetMapping("/api/customers/{customerId}/subscriptions")
-    public List<SubscriptionResponse> findAllByCustomer(@PathVariable Long customerId,
-                                                        @AuthenticationPrincipal Jwt jwt) {
-        accessGuard.checkCustomerAccess(jwt, customerId);
-        return subscriptionService.getAllByCustomerId(customerId);
-    }
 }
