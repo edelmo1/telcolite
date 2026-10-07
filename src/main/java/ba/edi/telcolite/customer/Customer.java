@@ -26,12 +26,21 @@ public class Customer {
     @Column(nullable=false)
     private  LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    private String passwordHash;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     protected Customer() {
     }
 
     public Customer(Long id, String firstName,
                     String lastName,
-                    String email){
+                    String email,
+                    String passwordHash,
+                    Role role){
 
         this.id=id;
         this.firstName=firstName;
@@ -39,6 +48,8 @@ public class Customer {
         this.email=email;
         this.status=CustomerStatus.ACTIVE;
         this.createdAt=LocalDateTime.now();
+        this.passwordHash=passwordHash;
+        this.role=role;
     }
 
     public void block(){
@@ -65,5 +76,6 @@ public class Customer {
     public String getEmail() { return email; }
     public CustomerStatus getStatus() { return status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
-
+    public String getPasswordHash() {return passwordHash;}
+    public Role getRole(){return role;}
 }

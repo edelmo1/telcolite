@@ -1,6 +1,7 @@
 package ba.edi.telcolite.customer;
 
 import ba.edi.telcolite.notification.NotificationService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +13,14 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final NotificationService notificationService;
+    private final PasswordEncoder passwordEncoder;
 
     public CustomerService(CustomerRepository customerRepository,
-                           NotificationService notificationService) {
+                           NotificationService notificationService,
+                           PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
         this.notificationService = notificationService;
+        this.passwordEncoder=passwordEncoder;
     }
 
     @Transactional
@@ -25,7 +29,9 @@ public class CustomerService {
             throw new DuplicateEmailException(request.email());
         }
 
-        Customer customer = new Customer(null,request.firstName(), request.lastName(), request.email());
+        Customer customer = new Customer(null,request.firstName(), request.lastName(), request.email(),
+                passwordEncoder.encode(request.password()),
+                Role.CUSTOMER);
         Customer saved = customerRepository.save(customer);
 
         notificationService.broadcast(saved.getEmail(),
