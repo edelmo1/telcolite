@@ -1,22 +1,21 @@
 package ba.edi.telcolite.notification;
 
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class NotificationService {
 
-    private final List<NotificationChannel> channels;
+    public static final String QUEUE = "telcolite.notifications";
 
-    public NotificationService(List<NotificationChannel> notifications) {
-        this.channels = notifications;
+    private final JmsTemplate jmsTemplate;
+
+    public NotificationService(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
     }
 
     public void broadcast(String recipient, String message) {
 
-        for (NotificationChannel notification : channels) {
-            notification.send(recipient, message);
-        }
+        jmsTemplate.convertAndSend(QUEUE,new NotificationMessage(recipient,message));
     }
 }

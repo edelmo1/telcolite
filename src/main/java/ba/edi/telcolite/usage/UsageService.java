@@ -27,11 +27,20 @@ public class UsageService {
     @Transactional
     public UsageRecordResponse record(Long subscriptionId, RecordUsageRequest request) {
         Subscription subscription = subscriptionService.getSubscription(subscriptionId);
-        if (!subscription.isActive()) {
-            throw new SubscriptionNotActiveException(subscriptionId);
-        }
+        return recordFor(subscription, request.type(), request.amount());
+    }
 
-        UsageRecord record = new UsageRecord(subscription, request.type(), request.amount());
+    @Transactional
+    public UsageRecordResponse recordByPhoneNumber(String phoneNumber, UsageType type, int amount) {
+        Subscription subscription = subscriptionService.getSubscriptionByPhoneNumber(phoneNumber);
+        return recordFor(subscription, type, amount);
+    }
+
+    private UsageRecordResponse recordFor(Subscription subscription, UsageType type, int amount) {
+        if (!subscription.isActive()) {
+            throw new SubscriptionNotActiveException(subscription.getId());
+        }
+        UsageRecord record = new UsageRecord(subscription, type, amount);
         return UsageRecordResponse.from(usageRecordRepository.save(record));
     }
 

@@ -108,4 +108,10 @@ public class SubscriptionService {
         double price = priceCalculator.finalMonthlyPrice(subscription.getTariff());
         return SubscriptionResponse.from(subscription, price, currency);
     }
+
+    public Subscription getSubscriptionByPhoneNumber(String phoneNumber) {
+        return subscriptionRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new SubscriptionNotFoundException(phoneNumber));
+    }
+
 }
